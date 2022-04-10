@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+
+    <%- include('partials/nav') %>
+        <div id="signup" class="main-flex">
+
+            <form class="glass form" action="/signup" enctype="multipart/form-data" method="post">
+                <h2>Sign Up</h2>
+                <% if(error) { %>
+                    <p class="error-message">
+                        <%= errorMessage %>
+                    </p>
+                    <label class="form-element" for="email">Email:</label>
+                    <input class="form-element" type="email" name="email" id="email" value="<%= email %>" required>
+                    <label class="form-element" for="fullname">Fullname:</label>
+                    <input type="text" name="fullname" id="fullname" value="<%= fullname %>" required>
+                    <label for="gender">Gender:</label>
+                    <select name="gender" id="gender" required>
+                        <option value="<%= gender %>" selected>
+                            <%= gender %>
+                        </option>
+                    </select>
+                    <label for="profile-image">Profile Image</label>
+                    <input type="file" name="profileImage" id="profileImage" value="<%= profileImage %>"
+                        accept="image/*">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" value="<%= password%>" required>
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" value="<%= confirmPassword%>"
+                        required>
+                    <% } else { %>
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" id="email" required>
+                        <label for="fullname">Fullname:</label>
+                        <input type="text" name="fullname" id="fullname" required>
+                        <label for="gender">Gender:</label>
+                        <select name="gender" id="gender" required>
+                            <option value="">--Please choose an option--</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <label for="profile-image">Profile Image</label>
+                        <input type="file" name="profileImage" id="profileImage" accept="image/*">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="Password" required>
+                        <label for="password">Confirm Password:</label>
+                        <input type="password" name="confirmPassword" id="confirmPassword" required>
+                        <% } %>
+
+                            <input type="submit" id="signup-btn" value="Sign Up">
+                            <p>Already have an account? <a href="/login">Log In</a></p>
+            </form>
+
+        </div>
+        <%- include('partials/footer') %>

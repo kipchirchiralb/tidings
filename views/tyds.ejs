@@ -1,0 +1,76 @@
+<%- include('partials/header') %>
+
+    <%- include('partials/nav') %>
+        <div id="tyds">
+            <div id="tyds-content">
+                <div id="user-profile-grid" class="tyds-grid-item">
+                    <img class="display-image" src="<%=user.profileImg%>" alt="user profile img">
+                    <h2>
+                        <%= user.fullname %>
+                    </h2>
+
+                </div>
+                <div id="tyds-main-grid" class="tyds-grid-item scrollable">
+                    <%if(tyds.length===0){ %>
+                        <p>No tydes yet. Post one</p>
+                        <%}%>
+                            <% tyds.forEach((tyd)=>{%>
+                                <div class="single-tyd">
+                                    <p>Tyd Id: <%= tyd.id%>
+                                    </p>
+                                    <p> From :
+                                    </p>
+                                    <p>Date: <%= tyd.dateposted.toString().split(" ").slice(0, 5).join(" ")  %>
+                                    </p>
+                                    <p>Likes: <%= tyd.likes%>
+                                    </p>
+                                    <p>Tyd: <%= tyd.tyd%>
+                                    </p>
+                                </div>
+                                
+                                            <%})%>
+                </div>
+                <div id=" live-panel-grid" class="tyds-grid-item">
+                                            <div id="active-users">
+                                                <h2>Active users</h2>
+                                                <div class="scrollable scrollable-side">
+                                                    <% users.forEach(user=>{%>
+                                                        <img src="<%= user.profileImg%>" class="profilePhoto" alt="">
+                                                        <p>
+                                                            <%= user.fullname %>
+                                                        </p>
+                                                        <%})%>
+                                                </div>
+
+                                            </div>
+                                            <div id="trending-topics">
+                                                <h2>Trending Topics</h2>
+                                                <div class="scrollable scrollable-side">
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                    <p>#mossad</p>
+                                                </div>
+                                            </div>
+                                </div>
+                </div>
+            </div>
+
+
+            <%- include('partials/footer') %>

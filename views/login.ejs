@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+    <%- include('partials/nav') %>
+        <div id="login" class="main-flex">
+            <form class="glass form" action="/login" method="post">
+                <h2>Log In</h2>
+                <% if(error){ %>
+                    <p class="error-message">
+                        <%= errorMessage %>
+                    </p>
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" value="<%= email %>" id="" required> <br>
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" value="<%= password %>" id="" required> <br>
+                    <% } else{%>
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" id="" required> <br>
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="" required> <br>
+                        <%}%>
+                            <input id="login-btn" type="submit" value="Log In">
+                            <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+            </form>
+
+        </div>
+        <%- include('partials/footer') %>
