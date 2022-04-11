@@ -69,6 +69,14 @@ connection.query(
     }
   }
 );
+connection.query(
+  "CREATE TABLE if not exists likes(id INT NOT NULL AUTO_INCREMENT, tydId INT(20),userId INT(20), PRIMARY KEY(id), FOREIGN KEY (tydId) REFERENCES users(id), FOREIGN KEY (userId) REFERENCES tyds(id))",
+  (err, result)=>{
+    if(err){
+      console.log(error)
+    }
+  }
+)
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -251,6 +259,7 @@ app.get("/tyds", (req, res) => {
                       tyds: tyds,
                       users: users,
                       user: user[0],
+                      liked: req.query.liked,
                     });
                   }
                 }
@@ -295,9 +304,47 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
   });
 });
-app.post('/update',(req,res)=>{
-  console.log(req.body.likesCounter)
+app.post('/updatelikes',(req,res)=>{
+  if(res.locals.isLoggedIn){
+    let value = req.query.value
+    let tydId= req.query.id
+    connection.query(`SELECT * FROM likes WHERE tydId= ${tydId} AND userId=${req.session.userId}`,
+    (error, likes)=>{
+      if(error){
+        console.log(error)
+      }else{
+        if(likes.length>0){
+          connection.query(`UPDATE tyds SET likes = ${value--} WHERE id = ${tydId}`,
+            (error, result)=>{
+              if(error){
+                console.log(error)
+              }else{    
+                  res.redirect('/tyds?liked=0')  
+              }
+            })
+        }else{
+          connection.query(`UPDATE tyds SET likes = ${value--} WHERE id = ${tydId}`,
+            (error, result)=>{
+              if(error){
+                console.log(error)
+              }else{
+                connection.query(`INSERT INTO likes (tydId, userId) VALUES (${tydId}, ${req.session.userId})`,
+                (error, result)=>{
+                  res.redirect('/tyds?liked=1')
+                })
+        
+              }
+            })
+        }
+      }
+    })
+    
+  }else{
+    res.redirect('/login')
+  }
+  
 })
+
 
 app.all("*", (req, res) => {
   res.render("404.ejs", { error: true });

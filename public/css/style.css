@@ -234,6 +234,9 @@ a {
   font-size: 1rem;
   gap: 10px;
   padding-bottom: 5px;
+  background-color: transparent;
+  border: none;
+  color: white;
 }
 .tyd-like-count img{
   cursor: pointer;
