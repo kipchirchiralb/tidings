@@ -1,5 +1,4 @@
 <%- include('partials/header') %>
-
     <%- include('partials/nav') %>
         <div id="tyds">
             <div id="tyds-content">
@@ -8,69 +7,81 @@
                     <h2>
                         <%= user.fullname %>
                     </h2>
-
                 </div>
                 <div id="tyds-main-grid" class="tyds-grid-item scrollable">
                     <%if(tyds.length===0){ %>
                         <p>No tydes yet. Post one</p>
                         <%}%>
-                            <% tyds.forEach((tyd)=>{%>
-                                <div class="single-tyd">
-                                    <p>Tyd Id: <%= tyd.id%>
-                                    </p>
-                                    <p> From :
-                                    </p>
-                                    <p>Date: <%= tyd.dateposted.toString().split(" ").slice(0, 5).join(" ")  %>
-                                    </p>
-                                    <p>Likes: <%= tyd.likes%>
-                                    </p>
-                                    <p>Tyd: <%= tyd.tyd%>
-                                    </p>
-                                </div>
-                                
-                                            <%})%>
-                </div>
-                <div id=" live-panel-grid" class="tyds-grid-item">
-                                            <div id="active-users">
-                                                <h2>Active users</h2>
-                                                <div class="scrollable scrollable-side">
-                                                    <% users.forEach(user=>{%>
-                                                        <img src="<%= user.profileImg%>" class="profilePhoto" alt="">
-                                                        <p>
-                                                            <%= user.fullname %>
-                                                        </p>
-                                                        <%})%>
-                                                </div>
 
-                                            </div>
-                                            <div id="trending-topics">
-                                                <h2>Trending Topics</h2>
-                                                <div class="scrollable scrollable-side">
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                    <p>#mossad</p>
-                                                </div>
-                                            </div>
-                                </div>
+                            <% tyds.forEach((tyd)=>{%>
+                                <% let tydOwner=users.find(user=>user.id===tyd.userId)%>
+                                    <div class="single-tyd">
+                                        <div class="upper">
+                                            <img src="<%= tydOwner.profileImg %>" alt="<%= tydOwner.fullname%>">
+                                            <p>
+                                                <%= tyd.tyd %>
+                                            </p>
+                                        </div>
+
+                                        <div class="lower">
+                                            <p>
+                                                <%= tyd.dateposted.toString().split(" ").slice(1, 5).join(" ")  %>
+                        </p>
+                        <div class=" likes-icon-count">
+                                                    <div class="tyd-like-count">
+                                                        <form action="/update" method="post">
+                                                            <img type="submit" class="tyd-like-icon"
+                                                                src="/images/icons/heart.svg" alt="">
+                                                            <p name="likes-counter">50</p>
+                                                        </form>
+                                                    </div>
+
+                                        </div>
+                                    </div>
+                </div>
+                <%})%>
+            </div>
+            <div id=" live-panel-grid" class="tyds-grid-item">
+                <div id="active-users">
+                    <h2>Active&nbsp;users</h2>
+                    <div class="scrollable scrollable-side">
+                        <% users.forEach(user=>{%>
+                            <div class="active-user">
+                                <img src="<%= user.profileImg%>" alt="<%= user.fullname %>">
+                                <p>
+                                    <%= user.fullname %>
+                                </p>
+                            </div>
+                            <%})%>
+                    </div>
+
+                </div>
+                <div id="trending-topics">
+                    <h2>Trending&nbsp;Topics</h2>
+                    <div class="scrollable scrollable-side">
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                        <p>#mossad</p>
+                    </div>
                 </div>
             </div>
-
-
-            <%- include('partials/footer') %>
+        </div>
+        </div>
+        <%- include('partials/footer') %>

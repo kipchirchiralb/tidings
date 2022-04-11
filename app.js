@@ -88,6 +88,7 @@ app.use((req, res, next) => {
   } else {
     res.locals.isLoggedIn = true;
     res.locals.userId = req.session.userId;
+    res.locals.profileImg = req.session.profileImage;
     res.locals.username = req.session.username.split(" ")[0];
   }
   next();
@@ -118,6 +119,7 @@ app.post("/login", (req, res) => {
           if (isEqual) {
             req.session.userId = results[0].id;
             req.session.username = results[0].fullname;
+            req.session.profileImg = results[0].profileImg;
             res.redirect("/tyds");
           } else {
             let errorMessage = "Email password mismatch";
@@ -228,33 +230,36 @@ app.post("/signup", upload.single("profileImage"), (req, res) => {
 // tyds
 app.get("/tyds", (req, res) => {
   if (res.locals.isLoggedIn) {
-    connection.query("SELECT * FROM tyds", (error, tyds) => {
-      if (error) {
-        console.log(error);
-      } else {
-        connection.query("SELECT * FROM users", (error, users) => {
-          if (error) {
-            console.log(error);
-          } else {
-            connection.query(
-              "SELECT * FROM users WHERE id=? ",
-              [res.locals.userId],
-              (error, user) => {
-                if (error) {
-                  console.log(error);
-                } else {
-                  res.render("tyds.ejs", {
-                    tyds: tyds,
-                    users: users,
-                    user: user[0],
-                  });
+    connection.query(
+      "SELECT * FROM tyds ORDER BY datePosted DESC",
+      (error, tyds) => {
+        if (error) {
+          console.log(error);
+        } else {
+          connection.query("SELECT * FROM users", (error, users) => {
+            if (error) {
+              console.log(error);
+            } else {
+              connection.query(
+                "SELECT * FROM users WHERE id=? ",
+                [res.locals.userId],
+                (error, user) => {
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    res.render("tyds.ejs", {
+                      tyds: tyds,
+                      users: users,
+                      user: user[0],
+                    });
+                  }
                 }
-              }
-            );
-          }
-        });
+              );
+            }
+          });
+        }
       }
-    });
+    );
   } else {
     res.redirect("/login");
   }
@@ -290,6 +295,9 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
   });
 });
+app.post('/update',(req,res)=>{
+  console.log(req.body.likesCounter)
+})
 
 app.all("*", (req, res) => {
   res.render("404.ejs", { error: true });
