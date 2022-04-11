@@ -70,7 +70,7 @@ connection.query(
   }
 );
 connection.query(
-  "CREATE TABLE if not exists likes(id INT NOT NULL AUTO_INCREMENT, tydId INT(20),userId INT(20), PRIMARY KEY(id), FOREIGN KEY (tydId) REFERENCES users(id), FOREIGN KEY (userId) REFERENCES tyds(id))",
+  "CREATE TABLE if not exists likes(id INT NOT NULL AUTO_INCREMENT, tydId INT(20),userId INT(20), PRIMARY KEY(id), FOREIGN KEY (tydId) REFERENCES tyds(id), FOREIGN KEY (userId) REFERENCES users(id))",
   (err, result)=>{
     if(err){
       console.log(error)
@@ -237,6 +237,7 @@ app.post("/signup", upload.single("profileImage"), (req, res) => {
 
 // tyds
 app.get("/tyds", (req, res) => {
+  console.log('tyds')
   if (res.locals.isLoggedIn) {
     connection.query(
       "SELECT * FROM tyds ORDER BY datePosted DESC",
@@ -255,12 +256,22 @@ app.get("/tyds", (req, res) => {
                   if (error) {
                     console.log(error);
                   } else {
-                    res.render("tyds.ejs", {
-                      tyds: tyds,
-                      users: users,
-                      user: user[0],
-                      liked: req.query.liked,
-                    });
+                    connection.query("SELECT * FROM likes WHERE userId= ?",[req.session.userId],
+                    (error, likes)=>{
+                      if(error){
+                        console.log(error)
+                      }else{
+                        console.log(likes)
+                        res.render("tyds.ejs", {
+                          tyds: tyds,
+                          users: users,
+                          user: user[0],
+                          likes: likes,
+                        });
+                      }
+                     
+                    })
+                    
                   }
                 }
               );
@@ -306,31 +317,45 @@ app.get("/logout", (req, res) => {
 });
 app.post('/updatelikes',(req,res)=>{
   if(res.locals.isLoggedIn){
-    let value = req.query.value
-    let tydId= req.query.id
+    let value = parseInt(req.query.value)
+    let tydId= parseInt(req.query.id)
+    
     connection.query(`SELECT * FROM likes WHERE tydId= ${tydId} AND userId=${req.session.userId}`,
     (error, likes)=>{
       if(error){
         console.log(error)
       }else{
         if(likes.length>0){
-          connection.query(`UPDATE tyds SET likes = ${value--} WHERE id = ${tydId}`,
+          value = value-1
+          connection.query(`UPDATE tyds SET likes = ${value} WHERE id = ${tydId}`,
             (error, result)=>{
               if(error){
                 console.log(error)
-              }else{    
-                  res.redirect('/tyds?liked=0')  
+              }else{ 
+                connection.query(`DELETE FROM likes  WHERE tydId=${tydId} AND userId=${req.session.userId}`,(error, result)=>{
+                  if(error){
+                    console.log(error)
+                  }else{
+                    res.redirect('/tyds')
+                  }
+                })   
+                   
               }
             })
         }else{
-          connection.query(`UPDATE tyds SET likes = ${value--} WHERE id = ${tydId}`,
+          value = value+1
+          connection.query(`UPDATE tyds SET likes = ${value} WHERE id = ${tydId}`,
             (error, result)=>{
               if(error){
                 console.log(error)
               }else{
-                connection.query(`INSERT INTO likes (tydId, userId) VALUES (${tydId}, ${req.session.userId})`,
+                connection.query("INSERT INTO likes (tydId, userId) VALUES (?,?)",[tydId, req.session.userId],
                 (error, result)=>{
-                  res.redirect('/tyds?liked=1')
+                  if(error){
+                    console.log(error)
+                  }else{
+                    res.redirect('/tyds')
+                  }
                 })
         
               }

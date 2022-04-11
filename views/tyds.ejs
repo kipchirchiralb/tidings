@@ -32,7 +32,8 @@
                                                         <form action="/updatelikes?value=<%=tyd.likes%>&id=<%=tyd.id%>"
                                                             method="post">
                                                             <button class="tyd-like-count" type="submit">
-                                                                <% if(liked){ %>
+                                                                <% if(likes.some(like=>like.tydId===tyd.id &&
+                                                                    like.userId=== locals.userId)){ %>
                                                                     <img class="tyd-like-icon"
                                                                         src="/images/icons/heart-fill.svg" alt="">
                                                                     <%}else{%>
@@ -42,6 +43,7 @@
                                                                             <p name="likesCounter">
                                                                                 <%= tyd.likes %>
                                                                             </p>
+
                                                             </button>
                                                         </form>
                                                     </div>
