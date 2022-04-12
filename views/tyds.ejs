@@ -3,21 +3,27 @@
         <div id="tyds">
             <div id="tyds-content">
                 <div id="user-profile-grid" class="tyds-grid-item">
-                    <img class="display-image" src="<%=user.profileImg%>" alt="user profile img">
+                    <div class="display-image">
+                        <img src="<%=user.profileImg%>" alt="user profile img">
+                    </div>
                     <h2>
                         <%= user.fullname %>
                     </h2>
-                </div>
-                <div id="tyds-main-grid" class="tyds-grid-item scrollable">
-                    <%if(tyds.length===0){ %>
-                        <p>No tydes yet. Post one</p>
-                        <%}%>
-
-                            <% tyds.forEach((tyd)=>{%>
+                    <div class="user-nav">
+                        <p><span>66</span>tyds</p>
+                        <p><span>103</span>likes</p>
+                        <div>
+                            <img src="/images/icons/edit.svg" alt="pen">
+                        </div>
+                    </div>
+                    <div class="all-user-tyds scrollable">
+                        <h3>My tyds</h3>
+                        <% tyds.forEach((tyd)=>{%>
+                            <%if(tyd.userId===locals.userId){%>
                                 <% let tydOwner=users.find(user=>user.id===tyd.userId)%>
                                     <div class="single-tyd">
                                         <div class="upper">
-                                            <img src="<%= tydOwner.profileImg %>" alt="<%= tydOwner.fullname%>">
+
                                             <p>
                                                 <%= tyd.tyd %>
                                             </p>
@@ -26,8 +32,8 @@
                                         <div class="lower">
                                             <p>
                                                 <%= tyd.dateposted.toString().split(" ").slice(1, 5).join(" ")  %>
-                                            </p>
-                                            <div class=" likes-icon-count">
+                                        </p>
+                                        <div class=" likes-icon-count">
                                                     <div class="tyd-like-count">
                                                         <form action="/updatelikes?value=<%=tyd.likes%>&id=<%=tyd.id%>"
                                                             method="post">
@@ -50,50 +56,115 @@
 
                                         </div>
                                     </div>
-                </div>
-                <%})%>
-            </div>
-            <div id=" live-panel-grid" class="tyds-grid-item">
-                <div id="active-users">
-                    <h2>Active&nbsp;users</h2>
-                    <div class="scrollable scrollable-side">
-                        <% users.forEach(user=>{%>
-                            <div class="active-user">
-                                <img src="<%= user.profileImg%>" alt="<%= user.fullname %>">
-                                <p>
-                                    <%= user.fullname %>
-                                </p>
-                            </div>
-                            <%})%>
                     </div>
+                    <%}%>
+                        <%})%>
 
                 </div>
-                <div id="trending-topics">
-                    <h2>Trending&nbsp;Topics</h2>
-                    <div class="scrollable scrollable-side">
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                        <p>#mossad</p>
-                    </div>
+            </div>
+            <div id="tyds-main-grid" class="tyds-grid-item scrollable">
+                <%if(tyds.length===0){ %>
+                    <p>No tydes yet. Post one</p>
+                    <%}%>
+
+                        <% tyds.forEach((tyd)=>{%>
+                            <% let tydOwner=users.find(user=>user.id===tyd.userId)%>
+                                <div class="single-tyd">
+                                    <div class="upper">
+                                        <div class="tyd-img-div">
+                                            <img src="<%= tydOwner.profileImg %>" alt="<%= tydOwner.fullname%>">
+                                        </div>
+
+                                        <p>
+                                            <%= tyd.tyd %>
+                                        </p>
+                                    </div>
+
+                                    <div class="lower">
+                                        <p>
+                                            <%= tyd.dateposted.toString().split(" ").slice(1, 5).join(" ")  %>
+                                            </p>
+                                            <div class=" likes-icon-count">
+                                                <div class="tyd-like-count">
+                                                    <form action="/updatelikes?value=<%=tyd.likes%>&id=<%=tyd.id%>"
+                                                        method="post">
+                                                        <button class="tyd-like-count" type="submit">
+                                                            <% if(likes.some(like=>like.tydId===tyd.id &&
+                                                                like.userId=== locals.userId)){ %>
+                                                                <img class="tyd-like-icon"
+                                                                    src="/images/icons/heart-fill.svg" alt="">
+                                                                <%}else{%>
+                                                                    <img class="tyd-like-icon"
+                                                                        src="/images/icons/heart.svg" alt="">
+                                                                    <%}%>
+                                                                        <p name="likesCounter">
+                                                                            <%= tyd.likes %>
+                                                                        </p>
+
+                                                        </button>
+                                                    </form>
+                                                </div>
+
+                                    </div>
+                                </div>
+            </div>
+            <%})%>
+        </div>
+        <div id=" live-panel-grid" class="tyds-grid-item">
+            <div id="active-users">
+                <h2>Active&nbsp;users</h2>
+                <div class="scrollable scrollable-side">
+                    <% users.forEach(user=>{%>
+                        <div class="active-user">
+                            <img src="<%= user.profileImg%>" alt="<%= user.fullname %>">
+                            <p>
+                                <%= user.fullname %>
+                            </p>
+                        </div>
+                        <%})%>
+                </div>
+
+            </div>
+            <div id="trending-topics">
+                <h2>Trending&nbsp;Topics</h2>
+                <div class="scrollable scrollable-side">
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
                 </div>
             </div>
         </div>
         </div>
+        </div>
+
         <%- include('partials/footer') %>
+            <script>
+                let scrollable = document.querySelector('#tyds-main-grid')
+                let scrollPos
+                scrollable.onscroll = (e) => {
+                    scrollPos = e.target.scrollTop
+                    localStorage.setItem("scrollPos", scrollPos)
+                }
+
+                document.addEventListener("DOMContentLoaded", (e) => {
+                    scrollPos = localStorage.getItem("scrollPos")
+                    if (scrollPos) scrollable.scrollTo(0, scrollPos)
+                })
+            </script>

@@ -1,5 +1,3 @@
-
-
 // let likes = document.querySelectorAll(".tyd-like-count");
 // likes.forEach((like) => {
 //   like.querySelector('.tyd-like-icon').addEventListener("click", (e) => {
@@ -11,17 +9,7 @@
 // });
 
 console.log("conn");
-let scrollable = document.querySelector('#tyds-main-grid')
-let scrollPos
-scrollable.onscroll = (e)=>{
-    scrollPos = e.target.scrollTop
-    localStorage.setItem("scrollPos", scrollPos)
-}
 
-document.addEventListener("DOMContentLoaded",(e)=>{
-    scrollPos = localStorage.getItem("scrollPos")
-    if(scrollPos) scrollable.scrollTo(0, scrollPos)
-})
 
 // //sample - code
 // document.addEventListener("DOMContentLoaded", function (event) {

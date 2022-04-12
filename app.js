@@ -11,7 +11,7 @@ const multer = require("multer");
 
 const upload = multer({
   limits: {
-    fileSize: 4 * 1024 * 1024,
+    fileSize: 8 * 1024 * 1024,
   },
 });
 const sharp = require("sharp");
@@ -237,7 +237,6 @@ app.post("/signup", upload.single("profileImage"), (req, res) => {
 
 // tyds
 app.get("/tyds", (req, res) => {
-  console.log('tyds')
   if (res.locals.isLoggedIn) {
     connection.query(
       "SELECT * FROM tyds ORDER BY datePosted DESC",
@@ -261,7 +260,6 @@ app.get("/tyds", (req, res) => {
                       if(error){
                         console.log(error)
                       }else{
-                        console.log(likes)
                         res.render("tyds.ejs", {
                           tyds: tyds,
                           users: users,
