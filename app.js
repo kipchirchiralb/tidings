@@ -283,13 +283,7 @@ app.get("/tyds", (req, res) => {
   }
 });
 // new-tyd
-app.get("/new-tyd", (req, res) => {
-  if (res.locals.isLoggedIn) {
-    res.render("new-tyd.ejs", { error: false });
-  } else {
-    res.redirect("/login");
-  }
-});
+
 app.post("/new-tyd", (req, res) => {
   if (res.locals.isLoggedIn) {
     connection.query(

@@ -16,8 +16,9 @@
                             <img src="/images/icons/edit.svg" alt="pen">
                         </div>
                     </div>
+                    <h3>My tyds</h3>
                     <div class="all-user-tyds scrollable">
-                        <h3>My tyds</h3>
+
                         <% tyds.forEach((tyd)=>{%>
                             <%if(tyd.userId===locals.userId){%>
                                 <% let tydOwner=users.find(user=>user.id===tyd.userId)%>
@@ -63,6 +64,19 @@
                 </div>
             </div>
             <div id="tyds-main-grid" class="tyds-grid-item scrollable">
+                <div id="new-tyd" class="new-tyd">
+                    <form class="form" action="/new-tyd" method="post">
+                        <textarea id="tyd-textarea" maxlength="240" name="tyd" rows="5" cols="20"
+                            placeholder="Share your Tyd.  (maximum of 240 characters)"></textarea>
+                        <div class="new-tyd-lower">
+                            <progress id="tyd-progress" max="240" value="0"></progress>
+                            <input id="new-tyd-btn" type="submit" value="Post">
+                        </div>
+                    </form>
+                </div>
+                <div style="text-align: center;">
+                    <h3>New Tyds</h3>
+                </div>
                 <%if(tyds.length===0){ %>
                     <p>No tydes yet. Post one</p>
                     <%}%>
@@ -167,4 +181,12 @@
                     scrollPos = localStorage.getItem("scrollPos")
                     if (scrollPos) scrollable.scrollTo(0, scrollPos)
                 })
+                
+                let inputTextArea = document.getElementById("tyd-textarea");
+                let tydProgress = document.getElementById("tyd-progress");
+                inputTextArea.addEventListener("input", () => {
+                    tydProgress.value = inputTextArea.value.length;
+                    // tydProgress.textContent = inputTextArea.value.length;
+                });
+       
             </script>
