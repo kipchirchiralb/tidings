@@ -1,0 +1,161 @@
+<%- include('partials/header') %>
+<%- include('partials/nav') %>
+<%let user = users.find(user=>user.id===locals.userId)%>
+<%let tydOwner = users.find(uuser=> uuser.id === 2)%>
+
+<div id="tyds">
+    <div id="tyds-content">
+        <div id="user-profile-grid" class=" user-profile-grid tyds-grid-item hide-for-mobile">
+            <div class="display-image">
+                <img src="<%=user.profileImg%>" alt="user profile img">
+            </div>
+            <h2>
+                <%= user.fullname %>
+            </h2>
+            <div class="user-nav">
+                <p><span>66</span>tyds</p>
+                <p><span>103</span>likes</p>
+                <div>
+                    <img src="/images/icons/edit.svg" alt="pen">
+                </div>
+            </div>
+        </div>
+        <div id="tyds-main-grid" class="tyds-main-grid tyds-grid-item scrollable">
+            
+            <div class="single-tyd">
+                <div class="upper">
+                    <div class="tyd-img-div">
+                        <img src="<%= tydOwner.profileImg %>" alt="<%= tydOwner.fullname%>">
+                    </div>
+                    <a href="/tyd?tydId=<%=tyd.id%>"><p class="tyd-text"><%= tyd.tyd %></p></a>
+                </div>
+                <div class="lower">
+                    <p><%= tyd.dateposted.toString().split(" ").slice(1, 5).join(" ")  %></p>
+                    <div class=" likes-icon-count">
+                        <div class="tyd-like-count">
+                            
+                            <a href="/tyd?tydId=<%=tyd.id%>">
+                                <img class="comment-btn" src="/images/icons/comment.svg" alt="">
+                            </a>
+                            <p><%=tyd.comments%>  <span class="hide-for-mobile"> <%if(tyd.comments===1){%> comment <%}else{%>comments<%}%></span></p>
+
+                            <form action="/updatelikes?value=<%=tyd.likes%>&id=<%=tyd.id%>"
+                                method="post">
+                                <button class="tyd-like-count" type="submit">
+                                    <%if(likes.some(like=>like.tydId===tyd.id &&
+                                        like.userId=== locals.userId)){ %>
+                                        <img class="tyd-like-icon" src="/images/icons/heart-fill.svg" alt="">
+                                        <%}else{%>
+                                        <img class="tyd-like-icon" src="/images/icons/heart.svg" alt="">
+                                        <%}%>
+                                        <p name="likesCounter"><%= tyd.likes %> <span class="hide-for-mobile"><%if(tyd.likes===1){%>like <%}else{%>likes<%}%></span></p>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="comments">
+                <div class="new-comment">
+                    <form class="form" action="/new-comment?tydId=<%=tyd.id%>" method="post">
+                        <textarea id="tyd-textarea" maxlength="240" name="comment" rows="3" cols="20"
+                            placeholder="Share your Tyd.  (maximum of 240 characters)"></textarea>
+                        
+                        <input id="new-tyd-btn" type="submit" value="Post">
+                        
+                    </form>
+                </div>
+                <%comments.forEach(comment=>{%>
+                    <% let commentOwner=users.find(user=>user.id===comment.userId)%>
+                    
+                    <div class="single-comment" >
+                        
+                            <div class="comment-img-div">
+                                <img src="<%= commentOwner.profileImg %>" alt="<%= commentOwner.fullname%>">
+                                <p><%=commentOwner.fullname.split(' ')[0].toString()%></p>
+                            </div>
+
+                            <div class="comment-right">
+                                <p class="comment-text"><%= comment.comment %></p>
+                                <p class="comment-date"><%= comment.dateposted.toString().split(" ").slice(1, 5).join(" ")  %></p>
+                            </div>
+                       
+                    </div>
+                    
+                <%})%>
+            </div>
+        </div>
+        <div id="live-panel-grid" class="live-panel-grid tyds-grid-item hide-for-mobile">
+            <div id="active-users">
+                <h2>Active&nbsp;users</h2>
+                <div class="scrollable scrollable-side">
+                    <% users.forEach(user=>{%>
+                        <div class="active-user">
+                            <img src="<%= user.profileImg%>" alt="<%= user.fullname %>">
+                            <p>
+                                <%= user.fullname %>
+                            </p>
+                        </div>
+                        <%})%>
+                </div>
+            </div>
+            <div id="trending-topics">
+                <h2>Trending&nbsp;Topics</h2>
+                <div class="scrollable scrollable-side">
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                    <p>#mossad</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
+<script>
+    let scrollable = document.querySelector('#tyds-main-grid')
+    let scrollPos
+    let activeCommentsId 
+    scrollable.onscroll = (e) => {
+        scrollPos = e.target.scrollTop
+        localStorage.setItem("scrollPos", scrollPos)
+    }
+
+    document.addEventListener("DOMContentLoaded", (e) => {
+        scrollPos = localStorage.getItem("scrollPos")
+        if (scrollPos) scrollable.scrollTo(0, scrollPos)
+    })
+    
+    let inputTextArea = document.getElementById("tyd-textarea");
+    inputTextArea.addEventListener("input", () => {
+        count = inputTextArea.value.length;
+        if(count>230){
+            inputTextArea.style.color = 'red'
+        }else if(count>200){
+            inputTextArea.style.color = 'orange'
+        }else{
+            inputTextArea.style.color = 'inherit'
+        }
+    });
+
+    
+
+</script>

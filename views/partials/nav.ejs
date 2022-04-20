@@ -2,19 +2,37 @@
     <div>
         <a id="logo" href="/">tidings</a>
     </div>
-    <nav>
-        <ul>
+    <nav class="nav-bar">
+        <a href="#" class="bell" >
+            <img class="notification-icon hide-for-desktop"  src="/images/icons/bell.svg" alt="">
+        </a>
+        <div class="menu-icon hide-for-desktop ">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+        <ul class="list-nav ">
             <li class="nav-link"> <a href="/about">About</a></li>
             <% if(locals.isLoggedIn) { %>
                 <li class="nav-link"> <a href="/tyds">Tyds</a> </li>
+                <li class="nav-link"> <a href="/new-tyd">+NewTyd</a> </li>
                 <li class="nav-link"> <a href="/logout">Log Out</a> </li>
-                <% } else { %>
-                    <li class="nav-link"> <a href="/login">Log In</a> </li>
-                    <li class="nav-link"> <a href="/signup">Sign Up</a> </li>
-
-                    <% } %>
-
-
+                <a href="#" >
+                    <img class="notification-icon hide-for-mobile"  src="/images/icons/bell.svg" alt="">
+                </a>
+            <% } else { %>
+                <li class="nav-link"> <a href="/login">Log In</a> </li>
+                <li class="nav-link"> <a href="/signup">Sign Up</a> </li>
+            <% } %>
+            
         </ul>
     </nav>
+    <script>
+        let list = document.querySelector('.list-nav')
+        let menuIcon = document.querySelector('.menu-icon')
+        menuIcon.addEventListener('click', ()=>{
+            menuIcon.classList.toggle('active')
+            list.classList.toggle('activate-list')
+        })
+    </script>
 </header>

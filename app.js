@@ -2,13 +2,12 @@ const express = require("express");
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
-const PORT = process.env.PORT || 3000;
+const app = express();
+const path = require("path");
 
-// trial multer middlware- for uploading files to server
-//  trial uuid - providing unique identifer to image filenames
-// sharp toresize the images
+
+// **************IMAGE UPDLOAD
 const multer = require("multer");
-
 const upload = multer({
   limits: {
     fileSize: 8 * 1024 * 1024,
@@ -16,7 +15,7 @@ const upload = multer({
 });
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
-const path = require("path");
+const req = require("express/lib/request");
 
 class Resize {
   constructor(folder) {
@@ -42,41 +41,18 @@ class Resize {
     return path.resolve(`${this.folder}/${filename}`);
   }
 }
+// ************image UPLOAD - END
 
-// continue
 
-const app = express();
+const PORT = process.env.PORT || 3000;
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
-  database: "tidings",
+  database: "testtidings",
 });
 
-connection.query(
-  "CREATE TABLE if not exists users(id INT NOT NULL AUTO_INCREMENT, email VARCHAR(25), fullname VARCHAR(25),gender VARCHAR(10), profileImg BLOB, password VARCHAR(100), PRIMARY KEY(id))",
-  (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-  }
-);
-connection.query(
-  "CREATE TABLE if not exists tyds(id INT NOT NULL AUTO_INCREMENT, tyd VARCHAR(255),likes INT DEFAULT 0, userId INT(20), dateposted DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), FOREIGN KEY (userID) REFERENCES users(id))",
-  (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-  }
-);
-connection.query(
-  "CREATE TABLE if not exists likes(id INT NOT NULL AUTO_INCREMENT, tydId INT(20),userId INT(20), PRIMARY KEY(id), FOREIGN KEY (tydId) REFERENCES tyds(id), FOREIGN KEY (userId) REFERENCES users(id))",
-  (err, result)=>{
-    if(err){
-      console.log(error)
-    }
-  }
-)
+require('./sqlqueries')
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -165,14 +141,16 @@ app.post("/signup", upload.single("profileImage"), (req, res) => {
     password = req.body.password,
     confirmPassword = req.body.confirmPassword,
     profileImage;
-  // ***********
-  const imagePath = path.join(__dirname, "/public/images");
+  // ***********malter
+  const imagePath = path.join(__dirname, "/public/images/userImages");
   const fileUpload = new Resize(imagePath);
+  let savedProfileImage
   if (!req.file) {
     profileImage = "/images/default-profile.png";
+  }else{
+    savedProfileImage = fileUpload.save(req.file.buffer);
+    profileImage = `/images/userImages/${savedProfileImage}`;
   }
-  savedProfileImage = fileUpload.save(req.file.buffer);
-  profileImage = `/images/${savedProfileImage}`;
   // ********
   if (password === confirmPassword) {
     bcrypt.hash(password, 10, (error, hash) => {
@@ -239,7 +217,7 @@ app.post("/signup", upload.single("profileImage"), (req, res) => {
 app.get("/tyds", (req, res) => {
   if (res.locals.isLoggedIn) {
     connection.query(
-      "SELECT * FROM tyds ORDER BY datePosted DESC",
+      "SELECT * FROM tyds ORDER BY dateposted DESC",
       (error, tyds) => {
         if (error) {
           console.log(error);
@@ -249,9 +227,9 @@ app.get("/tyds", (req, res) => {
               console.log(error);
             } else {
               connection.query(
-                "SELECT * FROM users WHERE id=? ",
+                "SELECT * FROM comments ORDER BY dateposted ASC",
                 [res.locals.userId],
-                (error, user) => {
+                (error, comments) => {
                   if (error) {
                     console.log(error);
                   } else {
@@ -263,8 +241,8 @@ app.get("/tyds", (req, res) => {
                         res.render("tyds.ejs", {
                           tyds: tyds,
                           users: users,
-                          user: user[0],
                           likes: likes,
+                          comments: comments
                         });
                       }
                      
@@ -282,8 +260,45 @@ app.get("/tyds", (req, res) => {
     res.redirect("/login");
   }
 });
+app.get('/tyd',(req,res)=>{
+  if(res.locals.isLoggedIn){ 
+    let tydId = parseInt(req.query.tydId);
+    connection.query(
+      `SELECT * FROM tyds WHERE id=${tydId}`, 
+      (error,tyd)=>{
+        connection.query(
+        `SELECT * FROM comments WHERE tydId=${tydId} ORDER BY dateposted DESC`,
+        (error,comments)=>{
+          connection.query(
+            'SELECT * FROM users',
+            (error, users)=>{
+              connection.query(
+                'SELECT * FROM likes',
+                (error, likes)=>{
+                  res.render('tyd.ejs', {tyd:tyd[0], comments:comments, users:users, likes:likes})
+                }
+              )
+            }
+          )
+        }
+        )
+      }
+    )
+  }else{
+    res.redirect('/login')
+  }
+
+})
+
 // new-tyd
 
+app.get('/new-tyd', (req,res)=>{
+  if (res.locals.isLoggedIn) {
+   res.render("new-tyd.ejs")
+  }else{
+    res.redirect('login')
+  }
+})
 app.post("/new-tyd", (req, res) => {
   if (res.locals.isLoggedIn) {
     connection.query(
@@ -301,6 +316,36 @@ app.post("/new-tyd", (req, res) => {
     res.redirect("/login");
   }
 });
+app.post("/new-comment", (req, res) => {
+  if (res.locals.isLoggedIn) {
+    connection.query(
+      "INSERT INTO comments (comment, userId, tydId) VALUES (?, ?, ?)",
+      [req.body.comment, req.session.userId, req.query.tydId],
+      (error, results) => {
+        if (error) {
+          console.error(error);
+        } else {
+          connection.query(
+            "UPDATE tyds SET comments = comments+1 WHERE id = ? ", 
+            [req.query.tydId],
+            (error, results)=>{
+              connection.query(
+                "INSERT INTO notifications(type,tydId, fromId) VALUES ('comment', ?, ?) ",
+                [parseInt(req.query.tydId), req.session.userId],
+                (error, results)=>{
+                  res.redirect(`/tyd?tydId=${req.query.tydId}`);
+                }
+              )
+              
+            }
+          )
+        }
+      }
+    );
+  } else {
+    res.redirect("/login");
+  }
+});
 
 app.get("/logout", (req, res) => {
   req.session.destroy((error) => {
@@ -309,7 +354,6 @@ app.get("/logout", (req, res) => {
 });
 app.post('/updatelikes',(req,res)=>{
   if(res.locals.isLoggedIn){
-    let value = parseInt(req.query.value)
     let tydId= parseInt(req.query.id)
     
     connection.query(`SELECT * FROM likes WHERE tydId= ${tydId} AND userId=${req.session.userId}`,
@@ -318,8 +362,7 @@ app.post('/updatelikes',(req,res)=>{
         console.log(error)
       }else{
         if(likes.length>0){
-          value = value-1
-          connection.query(`UPDATE tyds SET likes = ${value} WHERE id = ${tydId}`,
+          connection.query(`UPDATE tyds SET likes =likes-1 WHERE id = ${tydId}`,
             (error, result)=>{
               if(error){
                 console.log(error)
@@ -335,8 +378,7 @@ app.post('/updatelikes',(req,res)=>{
               }
             })
         }else{
-          value = value+1
-          connection.query(`UPDATE tyds SET likes = ${value} WHERE id = ${tydId}`,
+          connection.query(`UPDATE tyds SET likes = likes+1 WHERE id = ${tydId}`,
             (error, result)=>{
               if(error){
                 console.log(error)

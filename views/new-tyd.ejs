@@ -1,22 +1,13 @@
 <%- include('partials/header') %>
 
     <%- include('partials/nav') %>
-        <div id="new-tyd" class="main-flex">
-            <form class="glass form" action="/new-tyd" method="post">
-                <h2>Share your tyd</h2>
-                <textarea id="tyd-textarea" maxlength="240" name="tyd" rows="7" cols="50"
-                    placeholder="Maximum of 240 characters"></textarea>
-                <progress id="tyd-progress" max="240" value="0"></progress>
-                <input id="new-tyd-btn" type="submit" value="Post">
-            </form>
+        <div id="new-tyd" class="main-flex new-tyd">
+         
+                <form class="form glass" action="/new-tyd" method="post">
+                    <textarea id="tyd-textarea" maxlength="240" name="tyd" rows="10" cols="30"
+                        placeholder="Share your Tyd.  (maximum of 240 characters)"></textarea>
+                    <input id="new-tyd-btn" type="submit" value="Post">
+                </form>
+          
         </div>
-        <script>
-            let inputTextArea = document.getElementById("tyd-textarea");
-            let tydProgress = document.getElementById("tyd-progress");
-            inputTextArea.addEventListener("input", () => {
-                tydProgress.value = inputTextArea.value.length;
-                // tydProgress.textContent = inputTextArea.value.length;
-            });
-        </script>
-
         <%- include('partials/footer') %>

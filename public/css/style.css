@@ -137,7 +137,14 @@ header .nav-link {
 header .nav-link a:hover {
   text-decoration: underline;
 }
+.notification-icon{
+  display: inline;
+  margin-left: 1rem;
+  transform: translateY(20%);
+}
 
+
+/* *******body */
 .main-flex {
   display: flex;
   height: 90vh;
@@ -181,6 +188,8 @@ a {
   color: white;
   font-size: 1rem;
 }
+
+
 /* *****************TYDS PAGE******************* */
 /* tyds - grid */
 #tyds {
@@ -190,7 +199,7 @@ a {
 }
 #tyds-content {
   height: 80vh;
-  overflow: hidden;
+  /* overflow: hidden; */
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   justify-content: center;
@@ -204,38 +213,49 @@ a {
 }
 
 #new-tyd form{
-  width: 80%;
-}
-#new-tyd .new-tyd-lower{
+  width: 60%;
   display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: flex-end;
+  align-items: center;
 }
-#new-tyd .new-tyd-lower input{
-  width: 20%;
+#new-tyd form textarea{
+  display: inline;
+  width: 76%;
 }
+#new-tyd form input{
+  display: inline;
+  width: 10%;
+  height: 1.5rem;
+}
+
 
 
 
 
 /* TYDS - USER PROFILE GRID */
-#user-profile-grid{
+.user-profile-grid{
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
   height: 85vh;
+  font-size: 1rem;
 }
-#user-profile-grid .display-image{
+.user-profile-grid
+.user-profile-grid .display-image{
   width: 100px;
   height: 100px;
   border-radius: 50% ;
 }
-#user-profile-grid .display-image img{
+.user-profile-grid .display-image img{
   width: 100%;
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
-#user-profile-grid .user-nav{
+.user-profile-grid .user-nav{
   width: 100%;
   height: fit-content;
   padding: 10px 0;
@@ -244,38 +264,48 @@ a {
   font-size: 1rem;
   justify-content: space-between;
 }
-#user-profile-grid .user-nav span{
+.user-profile-grid .user-nav span{
   padding: 0 5px;
 }
-#user-profile-grid .all-user-tyds{
+.user-profile-grid .all-user-tyds{
   height: 400px;
 }
 
 
+/* HIDE */
+.hide{
+  display: none;
+}
 
 
 /* TYDS MAIN (CENTER) GRID */
-#tyds-main-grid {
+.tyds-main-grid {
   display: flex;
   flex-direction: column;
   overflow: auto;
 }
 .single-tyd {
   width: 80%;
+  /* padding: 0 60px; */
   margin: 0 auto;
   padding-top: 10px;
   border-bottom: 1px solid #0eb6ee;
 }
-#tyds-main-grid .single-tyd:last-child {
-  border: none;
-}
+
 .single-tyd .upper {
   display: flex;
   gap: 20px;
 }
+.single-tyd .upper a{
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+  text-decoration: none;
+}
 .single-tyd .lower {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.8rem;
 }
 
@@ -296,9 +326,12 @@ a {
 }
 .tyd-like-count img{
   cursor: pointer;
+  width: 1.3rem;
+  height: 1.3rem;
 }
 
 
+/* ******LIVE GRID****** */
 #active-users {
   height: 50%;
   margin-bottom: 10px;
@@ -332,13 +365,168 @@ a {
   font-size: 1rem;
 }
 
+/* SINGLE TYD PAGE */
+.comments{
+  width: 80%;
+  margin: 0 auto;
+ 
+
+}
+.new-comment{
+  width: 80%;
+  margin: 0 auto;
+  border: 1px solid #0eb6ee;
+
+}
+.new-comment form{
+  width: 80%;
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.new-comment form textarea{
+  width: 80%;
+}
+.new-comment form input{
+  width: 18%;
+}
+.single-comment{
+  width: 80%;
+  min-height: 70px ;
+  margin-left:auto;
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 1rem;
+  border-bottom: 1px solid #0eb6ee;
+  
+}
+
+.single-comment .comment-img-div{
+  height: 100%;
+  min-width: 17%;
+  height: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+.single-comment .comment-img-div img{
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  object-fit:fill;
+}
+.single-comment .comment-right{
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+ 
+}
+.single-comment .comment-right .comment-date{
+  font-size: .7rem;
+}
+
+
 /* backend case trials */
 .profilePhoto {
   width: 1rem;
   height: 1rem;
 }
+.hide-for-desktop{
+  display: none;
+}
 
 
 /* MEDIA QUERIES-TABLET AND BELOW */
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 768px) {
+  .container{
+    padding: 0 20px;
+  }
+  .hide-for-mobile{
+    display: none;
+  }
+  .hide-for-desktop{
+    display: block;
+  }
+  .menu-icon div{
+    width: 35px;
+    height: 3px;
+    background-color: #0eb6ee;
+    margin: 6px 0;
+    
+  }
+  /* Rotate first bar */
+  .active .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-6px, 6px) ;
+    transform: rotate(-45deg) translate(-6px, 6px) ;
+  }
+
+  /* Fade out the second bar */
+  .active .bar2 {
+    opacity: 0;
+  }
+
+  /* Rotate last bar */
+  .active .bar3 {
+    -webkit-transform: rotate(45deg) translate(-6px, -6px) ;
+    transform: rotate(45deg) translate(-6px, -6px) ;
+  }
+
+  .nav-bar{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+  .nav-bar .bell{
+    padding-bottom: 7px;
+  }
+  .list-nav{
+    z-index: 1000;
+    position: fixed;
+    top: -600px;
+    left: 0;
+    min-width: 90%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 30px;
+    background-color: rgba(30, 30, 30, 0.9);
+    color: #0eb6ee;
+  }
+  .activate-list{
+    top: 70px;
+  }
+  .list-nav li{
+    margin: 1rem 0;
+  }
+
+  #tyds-content {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    /* max-width: 100%; */
+  }
+
+  #home h1 {
+    font-size: 40px;
+  }
+  #home h2 {
+    font-size: 30px;
+    font-weight: lighter;
+  }
+  .form{
+    width: 80%;
+  }
 }
